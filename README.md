@@ -1,45 +1,27 @@
-# intellij-docstring-generator
+# IntelliJ Docstring Generator
 
-![Build](https://github.com/0electricista/intellij-docstring-generator/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
+## Overview
 
-## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get familiar with the [template documentation][template].
-- [ ] Adjust the [group](./gradle.properties), as well as the [id](./src/main/resources/META-INF/plugin.xml), [name](./src/main/resources/META-INF/plugin.xml), and [sources package](./src/main/kotlin).
-- [ ] Adjust the plugin [description](./src/main/resources/META-INF/plugin.xml) (see [Tips][docs:plugin-description]) and this README to describe what your plugin does.
-- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html?from=IJPluginTemplate).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [ ] Set the `MARKETPLACE_ID` in the above README badges. You can obtain it once the plugin is published to JetBrains Marketplace.
-- [ ] Set the [Plugin Signing](https://plugins.jetbrains.com/docs/intellij/plugin-signing.html?from=IJPluginTemplate) related [secrets](https://github.com/JetBrains/intellij-platform-plugin-template#environment-variables).
-- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html?from=IJPluginTemplate).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
+IntelliJ Docstring Generator is an IntelliJ IDEA plugin developed as part of an internship project. Its primary function is to automate the generation of professional Javadoc docstrings for Java methods by using Google Gemini. The project serves as a practical application of integrating artificial intelligence into developer tooling.
 
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
+## Functionality
 
-## Installation
+The plugin extends the IDE's capabilities by adding an action to generate documentation based on the selected code context. The general workflow is as follows:
 
-- Using the IDE built-in plugin system:
+1. **Configuration**: The user provides a Google Gemini API key via the plugin's settings panel. 
+2. **Context Extraction**: When the action is triggered, the plugin analyzes the current editor context using the Program Structure Interface (PSI). It identifies the selected text, verifies that the selection corresponds to a valid Java method, and extracts the relevant code block.
+3. **AI Processing**: The extracted code is formatted alongside a strict, predefined prompt and sent to the Gemini API via the `langchain4j` library. The request is processed asynchronously using a background task to prevent freezing the IDE.  
+4. **Code Modification**: Upon receiving the generated Javadoc block from the LLM, the plugin schedules a write command on the application thread. The documentation is then seamlessly inserted directly above the method declaration in the active document.
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "intellij-docstring-generator"</kbd> >
-  <kbd>Install</kbd>
+## Architecture
 
-- Using JetBrains Marketplace:
+*   **Actions**: Handles user interactions and integrates with the IntelliJ Action System. It manages the extraction of PSI elements and document offsets.
+*   **Services**: Encapsulates the business logic. It handles the instantiation of the AI client and the orchestration of the generation request.
+*   **Prompts**: Centralizes the static instructions sent to the LLM, ensuring that the model strictly returns Javadoc format without extraneous text.
+*   **Settings**: Manages the UI components and persistent storage for user preferences, specifically the secure management of the API key.
 
-  Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID) and install it by clicking the <kbd>Install to ...</kbd> button in case your IDE is running.
+## Technical Requirements
 
-  You can also download the [latest release](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID/versions) from JetBrains Marketplace and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
-- Manually:
-
-  Download the [latest release](https://github.com/0electricista/intellij-docstring-generator/releases/latest) and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
-
----
-Plugin based on the [IntelliJ Platform Plugin Template][template].
-
-[template]: https://github.com/JetBrains/intellij-platform-plugin-template
-[docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
+*   IntelliJ IDEA (Community or Ultimate Edition)
+*   Java Development Kit (JDK) 17 or higher
+*   An active Google Gemini API Key
