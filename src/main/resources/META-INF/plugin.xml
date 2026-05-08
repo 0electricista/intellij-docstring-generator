@@ -1,19 +1,33 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.0electricista.intellijdocstringgenerator</id>
-    <name>intellij-docstring-generator</name>
+    <id>com.github.electricista.intellijdocstringgenerator</id>
+    <name>Docstring-Generator</name>
     <vendor>0electricista</vendor>
     <description><![CDATA[
-        <p><b>intellij-docstring-generator</b> is a repository that provides a pure template to make it easier to create a new plugin project.</p>
-        <p>The main goal of this template is to speed up the setup phase of plugin development for both new and experienced developers by preconfiguring the project scaffold and CI, linking to the proper documentation pages, and keeping everything organized.</p>
+        <p><b>intellij-docstring-generator</b> is a plugin that automatically generates method docstrings using Gemini AI.</p>
+        <p>This plugin is not production ready, it is a little demo.</p>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.0electricista.intellijdocstringgenerator.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.github.0electricista.intellijdocstringgenerator.startup.MyProjectActivity" />
+        <notificationGroup id="AI_Docstring_Notifications"
+                           displayType="BALLOON"
+                           toolWindowId="Messages"/>
+        <applicationConfigurable
+            parentId="tools"
+            instance="com.github.electricista.intellijdocstringgenerator.settings.GeminiSettingsConfigurable"
+            id="com.github.electricista.intellijdocstringgenerator.settings.GeminiSettingsConfigurable"/>
+
     </extensions>
+    <actions>
+        <action id="com.github.electricista.intellijdocstringgenerator.GenerateDocstringAction"
+                class="com.github.electricista.intellijdocstringgenerator.actions.GenerateDocstringAction"
+                text="Method Docstring"
+                description="Generates a docstring for the selected code element">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
