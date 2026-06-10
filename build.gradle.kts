@@ -16,7 +16,7 @@ dependencies {
         bundledPlugin("com.intellij.java")
     }
     // Source: https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-google-ai-gemini
-    implementation("dev.langchain4j:langchain4j-google-ai-gemini:0.35.0")
+    implementation("dev.langchain4j:langchain4j-google-ai-gemini:1.16.2")
     // Source: https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation("org.slf4j:slf4j-api:1.7.25")
 }
